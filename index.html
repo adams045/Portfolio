@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shan Adams — Backend Software Developer</title>
+<meta name="description" content="Shan Adams — Backend Software Developer specializing in Java, Spring Boot, and microservices architecture.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c11;
+    --bg-panel: #10131a;
+    --bg-elevated: #151a23;
+    --border: #212733;
+    --border-soft: #191e28;
+    --text: #e4e8ee;
+    --text-dim: #8b95a5;
+    --text-faint: #545e6f;
+    --amber: #f2b84b;
+    --amber-soft: rgba(242,184,75,0.12);
+    --cyan: #6bc7d1;
+    --cyan-soft: rgba(107,199,209,0.12);
+    --green: #7fd9a0;
+    --display: 'Sora', sans-serif;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--sans);
+    line-height: 1.65; font-size: 16px; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(107,199,209,0.06), transparent 45%),
+      radial-gradient(circle at 90% 20%, rgba(242,184,75,0.05), transparent 45%);
+    pointer-events: none; z-index: 0;
+  }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--amber); color: #0a0c11; }
+
+  #progress { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--amber), var(--cyan)); z-index: 200; width: 0%; }
+  #spotlight { position: fixed; inset: 0; pointer-events: none; z-index: 2; background: radial-gradient(650px circle at var(--mx, 50%) var(--my, 50%), rgba(242,184,75,0.04), transparent 70%); }
+
+  /* ---------- Navbar ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,12,17,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-inner { max-width: 1080px; margin: 0 auto; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .logo .mark { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, var(--amber), var(--cyan)); display: flex; align-items: center; justify-content: center; color: #0a0c11; font-family: var(--display); font-weight: 800; font-size: 14px; }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-link { font-size: 14px; color: var(--text-dim); font-weight: 500; transition: color 0.15s ease; cursor: pointer; }
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active { color: var(--amber); }
+  .nav-cta { font-family: var(--sans); font-weight: 600; font-size: 13.5px; padding: 9px 18px; border-radius: 100px; background: var(--amber); color: #0a0c11; transition: all 0.15s ease; }
+  .nav-cta:hover { background: #ffc766; transform: translateY(-1px); }
+  .nav-toggle { display: none; }
+
+  main { position: relative; z-index: 1; }
+  section { max-width: 1080px; margin: 0 auto; padding: 100px 28px; scroll-margin-top: 80px; }
+
+  .eyebrow-tag {
+    display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 500;
+    color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(107,199,209,0.25);
+    padding: 5px 14px; border-radius: 100px; margin-bottom: 22px; letter-spacing: 0.02em;
+  }
+  h2.section-title { font-family: var(--display); font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 14px; }
+  .section-sub { color: var(--text-dim); font-size: 16px; max-width: 560px; margin-bottom: 48px; }
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-top: 100px; padding-bottom: 90px; position: relative; }
+  #hero-canvas { position: absolute; top: -60px; left: 0; width: 100%; height: 560px; z-index: 0; opacity: 0.5; pointer-events: none; }
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+  .status-pill { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; color: var(--green); background: rgba(127,217,160,0.08); border: 1px solid rgba(127,217,160,0.25); padding: 6px 16px; border-radius: 100px; margin-bottom: 28px; }
+  .status-pill .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(127,217,160,0.5); } 70% { box-shadow: 0 0 0 8px rgba(127,217,160,0); } 100% { box-shadow: 0 0 0 0 rgba(127,217,160,0); } }
+  .hero h1 { font-family: var(--display); font-size: clamp(38px, 6vw, 62px); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 22px; }
+  .hero h1 .grad { background: linear-gradient(120deg, var(--amber), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.lede { font-size: 18px; color: var(--text-dim); max-width: 540px; margin-bottom: 38px; }
+  .hero-links { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 64px; }
+  .btn { font-family: var(--sans); font-weight: 600; font-size: 14.5px; padding: 13px 24px; border-radius: 100px; border: 1px solid var(--border); color: var(--text); transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 8px; }
+  .btn:hover { border-color: var(--text-dim); background: rgba(255,255,255,0.03); transform: translateY(-1px); }
+  .btn.primary { background: var(--amber); color: #0a0c11; border-color: var(--amber); }
+  .btn.primary:hover { background: #ffc766; }
+
+  .hero-stats { display: grid; grid-template-columns: repeat(3, auto); gap: 46px; position: relative; z-index: 1; }
+  .hstat .num { font-family: var(--display); font-size: 30px; font-weight: 800; color: var(--text); }
+  .hstat .num .accent { color: var(--amber); }
+  .hstat .lbl { font-size: 13px; color: var(--text-faint); margin-top: 4px; }
+
+  /* ---------- About ---------- */
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: start; }
+  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-body p { color: var(--text-dim); font-size: 15.5px; margin-bottom: 18px; }
+  .about-body strong { color: var(--text); font-weight: 600; }
+  .about-body a.inline-link { color: var(--cyan); border-bottom: 1px dotted var(--cyan); }
+
+  .stat-cards { display: flex; flex-direction: column; gap: 14px; }
+  .stat-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; }
+  .stat-card .num { font-family: var(--display); font-size: 26px; font-weight: 800; color: var(--amber); }
+  .stat-card .lbl { font-size: 13px; color: var(--text-dim); text-align: right; max-width: 140px; }
+
+  /* ---------- Skills ---------- */
+  .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .skills-grid { grid-template-columns: 1fr; } }
+
+  .skill-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 22px; transition: border-color 0.2s ease, transform 0.2s ease; }
+  .skill-card:hover { border-color: var(--border); transform: translateY(-2px); }
+  .skill-card .icon { width: 38px; height: 38px; border-radius: 9px; background: var(--amber-soft); color: var(--amber); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 15px; margin-bottom: 14px; }
+  .skill-card .cat { font-family: var(--display); font-weight: 700; font-size: 14.5px; color: var(--text); margin-bottom: 10px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skill-tags span { font-size: 12px; color: var(--text-dim); background: var(--bg-elevated); border: 1px solid var(--border-soft); padding: 4px 10px; border-radius: 6px; }
+
+  .prof-wrap { margin-top: 40px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 36px; }
+  .prof-wrap-title { font-family: var(--display); font-weight: 700; font-size: 15px; margin-bottom: 24px; color: var(--text); }
+  .prof-row { margin-bottom: 18px; } .prof-row:last-child { margin-bottom: 0; }
+  .prof-label { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--text-dim); margin-bottom: 7px; }
+  .prof-label .pct { color: var(--amber); font-family: var(--mono); font-weight: 600; }
+  .prof-track { height: 7px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; }
+  .prof-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--amber), var(--cyan)); border-radius: 4px; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+  .prof-note { font-size: 12px; color: var(--text-faint); margin-top: 20px; }
+
+  /* ---------- Experience ---------- */
+  .exp-entry { display: grid; grid-template-columns: 160px 1fr; gap: 30px; padding: 28px 0; border-bottom: 1px solid var(--border-soft); }
+  .exp-entry:first-child { padding-top: 0; } .exp-entry:last-child { border-bottom: none; }
+  .exp-time { font-size: 13px; color: var(--text-faint); padding-top: 4px; }
+  .exp-time .status { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 11.5px; color: var(--green); }
+  .exp-time .status .d { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .exp-role { font-family: var(--display); font-weight: 700; color: var(--text); font-size: 18px; margin-bottom: 3px; }
+  .exp-org { font-size: 14px; color: var(--cyan); margin-bottom: 16px; }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li { position: relative; padding-left: 22px; margin-bottom: 11px; color: var(--text-dim); font-size: 15px; }
+  .exp-bullets li::before { content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
+
+  /* ---------- Projects ---------- */
+  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .project-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s ease, transform 0.2s ease; }
+  .project-card:hover { transform: translateY(-2px); }
+  .project-card.wide { grid-column: 1 / -1; }
+  .project-body { padding: 28px 30px; }
+  .project-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .project-title { font-family: var(--display); font-size: 18px; font-weight: 700; color: var(--text); }
+  .status-badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 100px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .status-badge .d { width: 6px; height: 6px; border-radius: 50%; }
+  .status-badge.dev { color: var(--amber); background: var(--amber-soft); }
+  .status-badge.dev .d { background: var(--amber); }
+  .status-badge.case { color: var(--cyan); background: var(--cyan-soft); }
+  .status-badge.case .d { background: var(--cyan); }
+  .project-desc { color: var(--text-dim); font-size: 14.5px; margin-bottom: 18px; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+  .tag { font-size: 12px; color: var(--text-dim); background: var(--bg-elevated); border: 1px solid var(--border-soft); padding: 4px 11px; border-radius: 6px; }
+
+  .accordion-panel { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.16,1,0.3,1); }
+  .accordion-panel.open { max-height: 1400px; }
+  .accordion-inner { padding-top: 22px; border-top: 1px solid var(--border-soft); margin-top: 22px; }
+  .cs-block { margin-bottom: 18px; } .cs-block:last-child { margin-bottom: 0; }
+  .cs-block .cs-label { font-family: var(--mono); font-size: 11px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; font-weight: 600; }
+  .cs-block p { color: var(--text-dim); font-size: 14px; }
+
+  .diagram-wrap { background: var(--bg-elevated); border: 1px solid var(--border-soft); border-radius: var(--radius-sm); padding: 18px; margin-top: 4px; }
+  .diagram-wrap svg { width: 100%; height: auto; display: block; }
+  .diag-node-label { font-family: var(--sans); font-size: 10.5px; fill: var(--text-dim); font-weight: 600; }
+  .diag-hub-label { font-family: var(--sans); font-size: 10.5px; fill: #0a0c11; font-weight: 700; }
+  .diag-legend { font-size: 12px; color: var(--text-faint); margin-top: 12px; }
+
+  .project-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .link-btn { font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border); color: var(--text-dim); transition: all 0.15s ease; cursor: pointer; background: transparent; }
+  .link-btn:hover { color: var(--amber); border-color: var(--amber); }
+  .link-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+  /* ---------- Repos ---------- */
+  .repo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .repo-grid { grid-template-columns: 1fr; } }
+  .repo-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 22px 24px; transition: transform 0.15s ease, border-color 0.15s ease; }
+  .repo-card:hover { transform: translateY(-2px); border-color: var(--border); }
+  .repo-name { font-family: var(--display); font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .repo-desc { color: var(--text-dim); font-size: 13.5px; margin-bottom: 16px; min-height: 38px; }
+  .repo-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text-faint); }
+  .repo-meta span { display: flex; align-items: center; gap: 5px; }
+  .lang-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); display: inline-block; }
+  .repo-fallback { background: var(--bg-panel); border: 1px dashed var(--border); border-radius: var(--radius); padding: 40px; text-align: center; color: var(--text-faint); font-size: 14px; grid-column: 1 / -1; }
+  .repo-fallback code { color: var(--amber); font-family: var(--mono); }
+  .repo-skeleton { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; grid-column: 1/-1; text-align: center; color: var(--text-faint); font-size: 14px; }
+
+  /* ---------- Now / roadmap ---------- */
+  .roadmap { position: relative; padding-left: 34px; }
+  .roadmap::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .rm-item { position: relative; padding-bottom: 32px; } .rm-item:last-child { padding-bottom: 0; }
+  .rm-dot { position: absolute; left: -34px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-panel); border: 2px solid var(--text-faint); display: flex; align-items: center; justify-content: center; }
+  .rm-dot .inner { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); }
+  .rm-title { font-family: var(--display); font-weight: 700; font-size: 15.5px; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rm-status { font-family: var(--mono); font-size: 10.5px; padding: 3px 10px; border-radius: 100px; color: var(--text-faint); border: 1px solid var(--border); }
+  .rm-desc { color: var(--text-dim); font-size: 14.5px; }
+
+  /* ---------- Contact ---------- */
+  .contact-card {
+    background: linear-gradient(160deg, var(--bg-panel), var(--bg-elevated));
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 46px 48px; text-align: center;
+  }
+  .contact-card h3 { font-family: var(--display); font-size: clamp(24px, 3vw, 32px); font-weight: 800; margin-bottom: 12px; }
+  .contact-card p { color: var(--text-dim); font-size: 15.5px; margin-bottom: 30px; max-width: 460px; margin-left: auto; margin-right: auto; }
+  .contact-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 34px; }
+  .contact-details { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 13.5px; color: var(--text-faint); }
+  .contact-details button { background: none; border: none; color: var(--text-faint); font-size: 13.5px; cursor: pointer; font-family: var(--sans); transition: color 0.15s ease; }
+  .contact-details button:hover { color: var(--amber); }
+
+  footer { text-align: center; padding: 46px 24px 64px; font-size: 13px; color: var(--text-faint); position: relative; z-index: 1; }
+
+  @media (max-width: 720px) {
+    section { padding: 64px 20px; }
+    .project-grid, .repo-grid { grid-template-columns: 1fr; }
+    .exp-entry { grid-template-columns: 1fr; gap: 8px; }
+    .hero-stats { grid-template-columns: 1fr 1fr; gap: 24px; }
+    #hero-canvas { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="spotlight"></div>
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="mark">SA</span> Shan Adams</div>
+    <div class="nav-links" id="nav-links">
+      <div class="nav-link" data-target="about">About</div>
+      <div class="nav-link" data-target="skills">Skills</div>
+      <div class="nav-link" data-target="experience">Experience</div>
+      <div class="nav-link" data-target="projects">Projects</div>
+      <div class="nav-link" data-target="repos">GitHub</div>
+      <div class="nav-link" data-target="now">Now</div>
+      <a class="nav-cta" href="mailto:shanadams64683@gmail.com">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="status-pill"><span class="pulse"></span>Available for opportunities</div>
+      <h1>Backend systems that<br><span class="grad">scale gracefully.</span></h1>
+      <p class="lede">I'm Shan Adams, a Backend Software Developer building production-grade services with Java, Spring Boot, and event-driven architecture. Based in Bangalore, India.</p>
+      <div class="hero-links">
+        <a class="btn primary" href="mailto:shanadams64683@gmail.com">Get in touch</a>
+        <a class="btn" href="./Shan_Adams_Resume.pdf" target="_blank" rel="noopener">Download Resume</a>
+        <a class="btn" href="https://github.com/adams045" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="num"><span class="accent" data-count="2">0</span>yr</div><div class="lbl">Experience</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <span class="eyebrow-tag">About</span>
+    <h2 class="section-title">A little about my work</h2>
+    <p class="section-sub">What I actually spend my time building.</p>
+    <div class="about-grid reveal">
+      <div class="about-body">
+        <p>I'm a <strong>Backend Software Developer</strong> with 2 years of experience building scalable systems using <strong>Java, Spring Boot</strong>, and modern data infrastructure — MySQL, Redis, Elasticsearch, and Apache Artemis for queue-based architectures.</p>
+        <p>My day-to-day work centers on <strong>e-commerce and B2B integration platforms</strong>. I built an in-house Punchout Portal that replaced a paid third-party subscription, connecting directly to supplier systems like Birchstreet and Microsoft D365. I've also integrated <strong>OpenAI's API</strong> into production workflows to automate content generation, and shipped customer-facing features in <strong>ReactJS</strong> that improved engagement for thousands of monthly users.</p>
+        <p>Outside of work, I'm building <strong>CommercePlex</strong> — a personal microservices project tying together everything I've learned: authentication, event-driven communication, distributed locking, and AI-assisted content generation. Check the <a href="#now" class="inline-link">Now</a> section for real build progress.</p>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="num">$15K</div><div class="lbl">Saved by replacing a third-party Punchout subscription</div></div>
+        <div class="stat-card"><div class="num">60%</div><div class="lbl">Less manual effort on content writing via AI pipeline</div></div>
+        <div class="stat-card"><div class="num">15%</div><div class="lbl">Lift in repeat visits from engagement features</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <span class="eyebrow-tag">Skills</span>
+    <h2 class="section-title">The stack I work in</h2>
+    <p class="section-sub">Tools I reach for daily, and how deep that experience actually runs.</p>
+
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <div class="icon">Ja</div>
+        <div class="cat">Languages &amp; Frameworks</div>
+        <div class="skill-tags"><span>Java 21</span><span>Spring Boot</span><span>ReactJS</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Db</div>
+        <div class="cat">Databases &amp; Cache</div>
+        <div class="skill-tags"><span>MySQL</span><span>Redis</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Mq</div>
+        <div class="cat">Messaging &amp; Search</div>
+        <div class="skill-tags"><span>Apache Artemis</span><span>Elasticsearch</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Ai</div>
+        <div class="cat">AI &amp; LLM</div>
+        <div class="skill-tags"><span>OpenAI API</span><span>Prompt Engineering</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Ec</div>
+        <div class="cat">E-Commerce</div>
+        <div class="skill-tags"><span>Shopify Apps</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Cl</div>
+        <div class="cat">Hosting</div>
+        <div class="skill-tags"><span>Cloudflare</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Ts</div>
+        <div class="cat">Testing</div>
+        <div class="skill-tags"><span>JUnit</span><span>Integration Testing</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="icon">Dk</div>
+        <div class="cat">Tooling</div>
+        <div class="skill-tags"><span>Docker</span><span>JWT</span></div>
+      </div>
+    </div>
+
+    <div class="prof-wrap reveal">
+      <div class="prof-wrap-title">Proficiency</div>
+      <div class="prof-row"><div class="prof-label"><span>Java / Spring Boot</span><span class="pct">85%</span></div><div class="prof-track"><div class="prof-fill" data-width="85"></div></div></div>
+      <div class="prof-row"><div class="prof-label"><span>MySQL / Redis</span><span class="pct">80%</span></div><div class="prof-track"><div class="prof-fill" data-width="80"></div></div></div>
+      <div class="prof-row"><div class="prof-label"><span>Elasticsearch</span><span class="pct">70%</span></div><div class="prof-track"><div class="prof-fill" data-width="70"></div></div></div>
+      <div class="prof-row"><div class="prof-label"><span>Apache Artemis / Messaging</span><span class="pct">70%</span></div><div class="prof-track"><div class="prof-fill" data-width="70"></div></div></div>
+      <div class="prof-row"><div class="prof-label"><span>ReactJS</span><span class="pct">65%</span></div><div class="prof-track"><div class="prof-fill" data-width="65"></div></div></div>
+      <div class="prof-row"><div class="prof-label"><span>OpenAI API / Prompt Eng.</span><span class="pct">60%</span></div><div class="prof-track"><div class="prof-fill" data-width="60"></div></div></div>
+      <div class="prof-note">* self-assessed — adjust these to match your own honest estimate</div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <span class="eyebrow-tag">Experience</span>
+    <h2 class="section-title">Where I've put this to work</h2>
+    <p class="section-sub">One role so far, with real production impact.</p>
+    <div class="reveal">
+      <div class="exp-entry">
+        <div class="exp-time">Feb 2025<br>— Present<div class="status"><span class="d"></span>current</div></div>
+        <div>
+          <div class="exp-role">Software Developer</div>
+          <div class="exp-org">JBPB Offshore Private Ltd. (formerly Hikeon Technologies) · Bangalore</div>
+          <ul class="exp-bullets">
+            <li>Designed and developed backend services and RESTful APIs in Java 21/Spring Boot for e-commerce and B2B integration platforms, using MySQL, Redis, and Elasticsearch for storage, caching, and indexed search.</li>
+            <li>Built an in-house Punchout Portal with cXML/XML transaction handling and Apache Artemis-based async queue processing, eliminating a paid third-party Punchout Cloud subscription (saving an estimated $15,000/year) while connecting to Birchstreet, Microsoft D365, and other supplier portals.</li>
+            <li>Built "Notify Me" and "Wishlist" customer engagement modules (ReactJS + Spring Boot + Elasticsearch), driving 10% of restocked-item sales and increasing repeat visits by 15%.</li>
+            <li>Integrated OpenAI's API to auto-generate product, collection, and blog/article content with prompt templates and a merchandiser approval workflow, cutting manual content-writing effort by 60% and new listing turnaround from 3 days to 4 hours.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <span class="eyebrow-tag">Projects</span>
+    <h2 class="section-title">What I've built</h2>
+    <p class="section-sub">One personal build in progress, plus case studies from real production work. Click a card to expand.</p>
+
+    <div class="project-grid reveal">
+
+      <!-- CommercePlex -->
+      <div class="project-card wide">
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">CommercePlex — E-Commerce Microservices Platform</div>
+            <span class="status-badge dev"><span class="d"></span>In Development</span>
+          </div>
+          <div class="project-desc">
+            An 8-service e-commerce backend built to tie together everything I know: Auth, Catalog, Order, Payment, Inventory Sync, Notification, AI Content Generation, and Search — communicating asynchronously via Apache Artemis instead of direct service-to-service calls.
+          </div>
+          <div class="tag-row">
+            <span class="tag">Java 21</span><span class="tag">Spring Boot</span><span class="tag">Apache Artemis</span>
+            <span class="tag">Redis</span><span class="tag">MySQL</span><span class="tag">Elasticsearch</span>
+            <span class="tag">OpenAI API</span><span class="tag">JWT</span><span class="tag">Docker</span>
+          </div>
+
+          <div class="accordion-panel" id="acc-cp">
+            <div class="accordion-inner">
+              <div class="cs-block">
+                <div class="cs-label">Challenge</div>
+                <p>Most portfolio projects are single monoliths. I wanted a project that actually demonstrates service boundaries, event-driven communication, and the operational thinking that comes with running independent services.</p>
+              </div>
+              <div class="cs-block">
+                <div class="cs-label">Approach</div>
+                <p>Each service owns its own database. Services never call each other directly — they publish and subscribe to events on Apache Artemis (<code>OrderPlaced</code>, <code>PaymentCompleted</code>, <code>StockUpdated</code>). Inventory uses Redis distributed locks to prevent overselling. Everything is containerized with Docker Compose behind a single API Gateway.</p>
+              </div>
+              <div class="cs-block">
+                <div class="cs-label">Architecture</div>
+                <div class="diagram-wrap">
+                  <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#f2b84b" stroke-width="1.4" fill="none" opacity="0.5">
+                      <line x1="320" y1="180" x2="120" y2="70"/><line x1="320" y1="180" x2="260" y2="45"/>
+                      <line x1="320" y1="180" x2="400" y2="45"/><line x1="320" y1="180" x2="520" y2="70"/>
+                      <line x1="320" y1="180" x2="560" y2="180"/><line x1="320" y1="180" x2="520" y2="290"/>
+                      <line x1="320" y1="180" x2="400" y2="320"/><line x1="320" y1="180" x2="260" y2="320"/>
+                      <line x1="320" y1="180" x2="120" y2="290"/><line x1="320" y1="180" x2="80" y2="180"/>
+                    </g>
+                    <circle cx="320" cy="180" r="34" fill="#f2b84b"/>
+                    <text x="320" y="177" text-anchor="middle" class="diag-hub-label">Artemis</text>
+                    <text x="320" y="189" text-anchor="middle" class="diag-hub-label">broker</text>
+                    <g><circle cx="120" cy="70" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="120" y="74" text-anchor="middle" class="diag-node-label">Auth</text></g>
+                    <g><circle cx="260" cy="45" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="260" y="49" text-anchor="middle" class="diag-node-label">Catalog</text></g>
+                    <g><circle cx="400" cy="45" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="400" y="49" text-anchor="middle" class="diag-node-label">Order</text></g>
+                    <g><circle cx="520" cy="70" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="520" y="74" text-anchor="middle" class="diag-node-label">Payment</text></g>
+                    <g><circle cx="560" cy="180" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="560" y="176" text-anchor="middle" class="diag-node-label">Inventory</text><text x="560" y="188" text-anchor="middle" class="diag-node-label">Sync</text></g>
+                    <g><circle cx="520" cy="290" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="520" y="294" text-anchor="middle" class="diag-node-label">Notify</text></g>
+                    <g><circle cx="400" cy="320" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="400" y="316" text-anchor="middle" class="diag-node-label">AI</text><text x="400" y="328" text-anchor="middle" class="diag-node-label">Content</text></g>
+                    <g><circle cx="260" cy="320" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="260" y="324" text-anchor="middle" class="diag-node-label">Search</text></g>
+                    <g><circle cx="120" cy="290" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="120" y="286" text-anchor="middle" class="diag-node-label">API</text><text x="120" y="298" text-anchor="middle" class="diag-node-label">Gateway</text></g>
+                    <g><circle cx="80" cy="180" r="26" fill="#151a23" stroke="#6bc7d1" stroke-width="1.5"/><text x="80" y="184" text-anchor="middle" class="diag-node-label">Docker</text></g>
+                  </svg>
+                  <div class="diag-legend">Amber lines = async event flow through the Artemis broker · each node is an independently deployable service</div>
+                </div>
+              </div>
+              <div class="cs-block">
+                <div class="cs-label">Status</div>
+                <p>Currently in active development — see the <a href="#now" class="inline-link" style="color:var(--cyan);">Now</a> section for the real build order and milestone progress.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-actions">
+            <a class="link-btn" href="https://github.com/adams045/commerceplex" target="_blank" rel="noopener">View Repo (add link once pushed)</a>
+            <span class="link-btn disabled">Live Demo — coming soon</span>
+            <span class="link-btn" data-accordion-toggle="acc-cp">Read case study ↓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Punchout Portal -->
+      <div class="project-card">
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">In-House Punchout Portal</div>
+            <span class="status-badge case"><span class="d"></span>Case Study</span>
+          </div>
+          <div class="project-desc">Replaced a paid third-party Punchout Cloud subscription with a custom-built portal handling cXML/XML transactions and async PO processing via Apache Artemis.</div>
+          <div class="tag-row"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Artemis</span><span class="tag">cXML</span></div>
+          <div class="accordion-panel" id="acc-po">
+            <div class="accordion-inner">
+              <div class="cs-block"><div class="cs-label">Challenge</div><p>The company paid an ongoing subscription just to connect customer procurement systems (Birchstreet, Microsoft D365) via Punchout/cXML.</p></div>
+              <div class="cs-block"><div class="cs-label">Approach</div><p>Built the cXML handshake, authentication, and redirect flow in-house, with Artemis queuing PO transactions asynchronously.</p></div>
+              <div class="cs-block"><div class="cs-label">Outcome</div><p>Eliminated the third-party subscription entirely (~$15,000/year).</p></div>
+            </div>
+          </div>
+          <div class="project-actions">
+            <span class="link-btn disabled">Proprietary — built at JBPB Offshore</span>
+            <span class="link-btn" data-accordion-toggle="acc-po">Read case study ↓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notify Me / Wishlist -->
+      <div class="project-card">
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">Notify Me &amp; Wishlist</div>
+            <span class="status-badge case"><span class="d"></span>Case Study</span>
+          </div>
+          <div class="project-desc">Back-in-stock alerts and a persistent wishlist for a live storefront, backed by Elasticsearch for fast product lookups.</div>
+          <div class="tag-row"><span class="tag">ReactJS</span><span class="tag">Spring Boot</span><span class="tag">Elasticsearch</span><span class="tag">Cloudflare</span></div>
+          <div class="accordion-panel" id="acc-nw">
+            <div class="accordion-inner">
+              <div class="cs-block"><div class="cs-label">Challenge</div><p>Customers were losing interest when items were out of stock, with no way to be notified or save items for later.</p></div>
+              <div class="cs-block"><div class="cs-label">Approach</div><p>Built a subscription model on Elasticsearch-indexed inventory, triggering notifications on restock, plus a persistent wishlist tied to accounts.</p></div>
+              <div class="cs-block"><div class="cs-label">Outcome</div><p>Drove 10% of restocked-item sales and a 15% lift in repeat visits.</p></div>
+            </div>
+          </div>
+          <div class="project-actions">
+            <span class="link-btn disabled">Proprietary — built at JBPB Offshore</span>
+            <span class="link-btn" data-accordion-toggle="acc-nw">Read case study ↓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Content Gen -->
+      <div class="project-card wide">
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-title">AI-Powered Content Generation Pipeline</div>
+            <span class="status-badge case"><span class="d"></span>Case Study</span>
+          </div>
+          <div class="project-desc">Integrated OpenAI's API into the e-commerce platform to auto-generate product descriptions, collection copy, and blog/article content, with a merchandiser approval workflow.</div>
+          <div class="tag-row"><span class="tag">OpenAI API</span><span class="tag">Prompt Engineering</span><span class="tag">Spring Boot</span></div>
+          <div class="accordion-panel" id="acc-ai">
+            <div class="accordion-inner">
+              <div class="cs-block"><div class="cs-label">Challenge</div><p>Writing product/collection/blog copy manually didn't scale with catalog growth, slowing new listing turnaround.</p></div>
+              <div class="cs-block"><div class="cs-label">Approach</div><p>Designed prompt templates tuned for consistent brand tone, wired into OpenAI's API, with a human-in-the-loop approval step before publishing.</p></div>
+              <div class="cs-block"><div class="cs-label">Outcome</div><p>Cut manual content-writing effort by 60% and shrunk new-listing turnaround from 3 days to 4 hours.</p></div>
+            </div>
+          </div>
+          <div class="project-actions">
+            <span class="link-btn disabled">Proprietary — built at JBPB Offshore</span>
+            <span class="link-btn" data-accordion-toggle="acc-ai">Read case study ↓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIVE GITHUB REPOS -->
+  <section id="repos">
+    <span class="eyebrow-tag">Live from GitHub</span>
+    <h2 class="section-title">Open source &amp; personal repos</h2>
+    <p class="section-sub">Pulled in real time from the GitHub API — always current, never hand-edited.</p>
+    <div class="repo-grid reveal" id="repo-grid">
+      <div class="repo-skeleton" id="repo-loading">Fetching repositories…</div>
+    </div>
+  </section>
+
+  <!-- NOW / ROADMAP -->
+  <section id="now">
+    <span class="eyebrow-tag">Now</span>
+    <h2 class="section-title">What I'm actually working on</h2>
+    <p class="section-sub">An honest build tracker — no fake milestones, updated as things actually happen.</p>
+    <div class="roadmap reveal">
+      <div class="rm-item">
+        <div class="rm-dot"><div class="inner"></div></div>
+        <div class="rm-title">Auth + Catalog services <span class="rm-status">planned</span></div>
+        <div class="rm-desc">JWT-based auth with role-based access control, plus product/collection/category CRUD. Foundation for everything else in CommercePlex.</div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot"><div class="inner"></div></div>
+        <div class="rm-title">Order + Payment services <span class="rm-status">planned</span></div>
+        <div class="rm-desc">Order state machine and idempotent payment processing — the core transactional flow.</div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot"><div class="inner"></div></div>
+        <div class="rm-title">Inventory Sync + Notification <span class="rm-status">planned</span></div>
+        <div class="rm-desc">Redis-based distributed locking for stock consistency, plus event-driven order notifications via Artemis.</div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot"><div class="inner"></div></div>
+        <div class="rm-title">AI Content + Search services <span class="rm-status">planned</span></div>
+        <div class="rm-desc">OpenAI-powered content generation and Elasticsearch-backed search, kept in sync via events.</div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot"><div class="inner"></div></div>
+        <div class="rm-title">Docker Compose + API Gateway <span class="rm-status">planned</span></div>
+        <div class="rm-desc">Tie all services together, containerized, behind a single gateway. This is the point the repo link above goes live.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-card reveal">
+      <h3>Let's build something.</h3>
+      <p>Open to backend and full-stack opportunities. Reach out any time — I usually reply within a day.</p>
+      <div class="contact-links">
+        <a class="btn primary" href="mailto:shanadams64683@gmail.com">Email Me</a>
+        <a class="btn" href="https://www.linkedin.com/in/shan-adams-m-0130a8225/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/adams045" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="contact-details">
+        <span>shanadams64683@gmail.com</span>
+        <button data-copy="shanadams64683@gmail.com">copy email</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Designed &amp; built by Shan Adams · Bangalore, India</footer>
+
+<script>
+  const GITHUB_USERNAME = 'adams045';
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll progress
+  const progressBar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progressBar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Mouse spotlight
+  if (window.matchMedia('(pointer:fine)').matches && !prefersReducedMotion) {
+    document.addEventListener('mousemove', (e) => {
+      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+      document.documentElement.style.setProperty('--my', e.clientY + 'px');
+    }, { passive: true });
+  } else {
+    document.getElementById('spotlight').style.display = 'none';
+  }
+
+  // Hero particle canvas
+  (function heroCanvas() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas || prefersReducedMotion) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, particles;
+    function resize() { w = canvas.width = canvas.offsetWidth; h = canvas.height = canvas.offsetHeight; }
+    function init() {
+      resize();
+      const count = Math.min(55, Math.floor(w / 24));
+      particles = Array.from({ length: count }, () => ({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25 }));
+    }
+    function tick() {
+      ctx.clearRect(0,0,w,h);
+      particles.forEach(p => { p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; });
+      for (let i=0;i<particles.length;i++){
+        for (let j=i+1;j<particles.length;j++){
+          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<120){ ctx.strokeStyle=`rgba(242,184,75,${0.1*(1-dist/120)})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke(); }
+        }
+        ctx.fillStyle='rgba(107,199,209,0.45)'; ctx.beginPath(); ctx.arc(particles[i].x,particles[i].y,1.5,0,Math.PI*2); ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    init(); window.addEventListener('resize', init); tick();
+  })();
+
+  // Hero counters (animate immediately on load, since hero is always visible)
+  function animateCount(el) {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = target % 1 !== 0;
+    let current = 0;
+    const step = target / 40;
+    const anim = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(anim); }
+      el.textContent = (isDecimal ? current.toFixed(1) : Math.floor(current)) + suffix;
+    }, 20);
+  }
+  document.querySelectorAll('.hero-stats [data-count]').forEach(el => animateCount(el));
+
+  // Nav active state + smooth scroll
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('main section[id]');
+  navLinks.forEach(link => link.addEventListener('click', () => {
+    const target = document.getElementById(link.dataset.target);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }));
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.nav-link[data-target="${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+  sections.forEach(s => navObserver.observe(s));
+
+  // Reveal + counters + proficiency bars
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('visible');
+      entry.target.querySelectorAll('[data-count]').forEach(el => {
+        const target = parseFloat(el.dataset.count);
+        const suffix = el.dataset.suffix || '';
+        const isDecimal = target % 1 !== 0;
+        let current = 0; const step = target / 40;
+        const anim = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(anim); }
+          el.textContent = (isDecimal ? current.toFixed(1) : Math.floor(current)) + suffix;
+        }, 20);
+      });
+      entry.target.querySelectorAll('.prof-fill').forEach(el => { el.style.width = el.dataset.width + '%'; });
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Copy buttons
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        const original = btn.textContent;
+        btn.textContent = 'copied ✓';
+        setTimeout(() => btn.textContent = original, 1500);
+      } catch (e) {}
+    });
+  });
+
+  // Accordions
+  document.querySelectorAll('[data-accordion-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const panel = document.getElementById(el.dataset.accordionToggle);
+      if (panel) panel.classList.toggle('open');
+    });
+  });
+
+  // Live GitHub repos
+  async function loadGithubRepos() {
+    const grid = document.getElementById('repo-grid');
+    if (!GITHUB_USERNAME || GITHUB_USERNAME === 'YOUR-USERNAME') {
+      grid.innerHTML = `<div class="repo-fallback">Set <code>GITHUB_USERNAME</code> at the top of the script to pull live repos here.</div>`;
+      return;
+    }
+    try {
+      const res = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`);
+      if (!res.ok) throw new Error('fetch failed');
+      const repos = await res.json();
+      if (!Array.isArray(repos) || repos.length === 0) {
+        grid.innerHTML = `<div class="repo-fallback">No public repos found for <code>${GITHUB_USERNAME}</code> yet.</div>`;
+        return;
+      }
+      grid.innerHTML = repos.map(r => `
+        <div class="repo-card">
+          <div class="repo-name">${r.name}</div>
+          <div class="repo-desc">${r.description ? escapeHtml(r.description) : 'No description provided.'}</div>
+          <div class="repo-meta">
+            <span>${r.language ? `<span class="lang-dot"></span>${r.language}` : ''}</span>
+            <span>★ ${r.stargazers_count}</span>
+            <span>updated ${new Date(r.updated_at).toLocaleDateString()}</span>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      grid.innerHTML = `<div class="repo-fallback">Couldn't reach the GitHub API. If you're viewing this via file://, open it through a real server or deploy it — browsers block API calls from local files.</div>`;
+    }
+  }
+  function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+  loadGithubRepos();
+</script>
+
+</body>
+</html>
